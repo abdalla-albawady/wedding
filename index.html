@@ -62,6 +62,39 @@
             position: relative;
             line-height: 1.8;
             min-height: 100vh;
+            transition: background 0.8s ease;
+        }
+
+        /* VIP Full Screen Mode & Huge Glow Effect */
+        body.vip-mode {
+            background: linear-gradient(135deg, #4A0E23 0%, #7A1C40 50%, #2A0512 100%) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.vip-mode::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            height: 90vh;
+            background: radial-gradient(circle, rgba(230, 100, 160, 0.45) 0%, rgba(200, 50, 120, 0.2) 45%, transparent 75%);
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(50px);
+            animation: vipBigGlow 3.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes vipBigGlow {
+            0% {
+                opacity: 0.65;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.25);
+            }
         }
 
         /* Falling Flowers Layer */
@@ -85,13 +118,13 @@
             will-change: transform, opacity;
         }
 
-        /* Lily Petal SVG Styling */
+        /* Lily Petal Styling */
         .lily-petal {
             width: 28px;
             height: 28px;
             background: radial-gradient(circle, #FFF0F5 0%, #FFB6C1 60%, #E68AAB 100%);
             border-radius: 80% 0 80% 0;
-            box-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+            box-shadow: 0 0 12px rgba(255, 182, 193, 0.8);
             display: inline-block;
         }
 
@@ -706,15 +739,15 @@
 
         /* Distinct Version Card Styles & Animations */
 
-        /* 1. VIP Style (19527) - Pink & Glowing Pulse */
+        /* 1. VIP Style (19527) - Glowing Pink Glow Pulse */
         #downloadable-card.theme-vip {
-            background: linear-gradient(145deg, #5C1B33, #2E0B18) !important;
+            background: linear-gradient(145deg, #6E1B3F, #3B0B22) !important;
             border-color: #F4E2B8 !important;
-            animation: vipPulseGlow 3s infinite alternate ease-in-out;
+            animation: vipPulseGlow 2.8s infinite alternate ease-in-out;
         }
         @keyframes vipPulseGlow {
-            0% { box-shadow: 0 0 20px rgba(230, 138, 171, 0.3), inset 0 0 15px rgba(255, 240, 245, 0.2); }
-            100% { box-shadow: 0 0 40px rgba(230, 138, 171, 0.7), inset 0 0 30px rgba(255, 240, 245, 0.4); }
+            0% { box-shadow: 0 0 25px rgba(240, 100, 160, 0.5), inset 0 0 20px rgba(255, 240, 245, 0.3); }
+            100% { box-shadow: 0 0 60px rgba(255, 120, 180, 0.95), inset 0 0 35px rgba(255, 240, 245, 0.6); }
         }
 
         /* 2. Waleed Family Style (101064) - Royal Navy & Smooth Shift */
@@ -1152,7 +1185,7 @@
 
         let activeEffectType = 'default';
 
-        // Falling Flowers Effect Engine (Default Pink vs VIP Lilies)
+        // Falling Flowers Effect Engine
         function startFlowerEffect(type = 'default') {
             const bgContainer = document.getElementById('flower-bg-container');
             bgContainer.innerHTML = ''; // Reset existing
@@ -1316,6 +1349,8 @@
         }
 
         function resetCardToPublic() {
+            document.body.classList.remove('vip-mode'); // Remove Fullscreen VIP Glow
+
             const card = document.getElementById('downloadable-card');
             card.className = ''; // reset theme classes
             
@@ -1363,21 +1398,25 @@
             const senderBox = document.getElementById('card-sender-highlight');
             const familyRow = document.getElementById('family-member-row');
 
-            // 1. VIP CODE: 19527
+            // 1. VIP CODE: 19527 (Full Screen Glow & Pink Background)
             if (cleanCode === '19527') {
+                document.body.classList.add('vip-mode'); // Activate Fullscreen Pink + Large Glow
+
                 card.className = 'theme-vip';
-                tagBadge.innerText = 'دعوة خاصة - VIP';
+                tagBadge.innerText = 'دعوة خاصة ';
                 footerText.innerText = 'يسعدنا ويشرفنا حضوركم الخاص والمميز جداً';
                 senderBox.style.display = 'none';
                 familyRow.style.display = 'none';
 
                 msg.className = 'status-msg success';
-                msg.innerText = 'تم تفعيل النسخة الزهرية VIP وتساقط زهور الليليز!';
+                msg.innerText = 'ليليز <3';
 
                 if (activeEffectType !== 'lily') startFlowerEffect('lily');
             }
             // 2. WALEED FAMILY CODE: 101064
             else if (cleanCode === '101064') {
+                document.body.classList.remove('vip-mode');
+
                 card.className = 'theme-waleed';
                 tagBadge.innerText = 'دعوة خاصة - أسرة وليد';
                 footerText.innerText = 'يتشرف آل وليد بحضوركم الكريم';
@@ -1390,6 +1429,8 @@
             }
             // 3. ATEF FAMILY CODE: 207
             else if (cleanCode === '207') {
+                document.body.classList.remove('vip-mode');
+
                 card.className = 'theme-atef';
                 tagBadge.innerText = 'دعوة خاصة - أسرة عاطف';
                 footerText.innerText = 'يتشرف آل عاطف بحضوركم الكريم';
@@ -1402,6 +1443,8 @@
             }
             // UNKNOWN CODE
             else if (cleanCode.length > 0) {
+                document.body.classList.remove('vip-mode');
+
                 card.className = '';
                 tagBadge.innerText = 'دعوة عامة';
                 footerText.innerText = 'يسعدنا حضوركم وتشريفكم لنا';
